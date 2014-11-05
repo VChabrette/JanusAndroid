@@ -2,9 +2,14 @@ package fr.janusproject.janusandroid;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.arakhne.afc.vmutil.Android;
+
+import fr.janusproject.janusandroid.agents.HelloWorldAgent;
+import io.janusproject.kernel.Kernel;
 
 public class HomeActivity extends Activity {
 
@@ -12,6 +17,17 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        try {
+            Android.initialize(this);
+        } catch (Android.AndroidException e) {
+            Log.e("JanusApplication", e.getLocalizedMessage(), e);
+        }
+
+        Kernel janusKernel = Kernel.create();
+        HelloWorldAgent agent = new HelloWorldAgent(null);
+
+        janusKernel.spawn(agent.getClass());
     }
 
 
