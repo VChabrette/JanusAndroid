@@ -3,10 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 20
     buildToolsVersion "20.0.0"
-
     defaultConfig {
         applicationId "fr.janusproject.janusandroid"
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 20
         versionCode 1
         versionName "1.0"
@@ -17,9 +16,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
+}
+
+repositories{
+    mavenCentral()
+    def homePath = System.properties['user.home']
+    maven{
+        url "file://" + homePath + "/.m2/repository"
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/janus.jar')
+    //compile files('libs/janus.jar')
+    provided 'io.janusproject:io.janusproject.kernel:2.0.2.0-SNAPSHOT'
 }

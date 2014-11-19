@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import org.arakhne.afc.vmutil.Android;
 
@@ -18,18 +20,31 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Button janus_btn = new Button(this);
+        janus_btn = (Button) findViewById(R.id.btn_janus);
+        janus_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchJanus();
+            }
+        });
+    }
+
+    public void launchJanus(){
         try {
             Android.initialize(this);
         } catch (Android.AndroidException e) {
             Log.e("JanusApplication", e.getLocalizedMessage(), e);
         }
 
-        Kernel janusKernel = Kernel.create();
-        HelloWorldAgent agent = new HelloWorldAgent(null);
+        Kernel janusKernel = null;
+        HelloWorldAgent agent = null;
 
+
+        janusKernel = Kernel.create();
+        agent = new HelloWorldAgent(null);
         janusKernel.spawn(agent.getClass());
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
