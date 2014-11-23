@@ -31,6 +31,7 @@ public class HomeActivity extends Activity {
     }
 
     public void launchJanus(){
+        Log.e("--","test");
         try {
             Android.initialize(this);
         } catch (Android.AndroidException e) {

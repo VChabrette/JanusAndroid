@@ -1,0 +1,4 @@
+rootProject.name = 'io.janusproject'
+include ':io.janusproject.kernel'
+
+project(':io.janusproject.kernel').projectDir = "$rootDir/io.janusproject.kernel" as File
