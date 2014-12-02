@@ -2,7 +2,6 @@ package fr.janusproject.janusandroid;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,8 +9,11 @@ import android.widget.Button;
 
 import org.arakhne.afc.vmutil.Android;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import fr.janusproject.janusandroid.agents.HelloWorldAgent;
-import io.janusproject.kernel.Kernel;
+import io.janusproject.Boot;
 
 public class HomeActivity extends Activity {
 
@@ -31,20 +33,25 @@ public class HomeActivity extends Activity {
     }
 
     public void launchJanus(){
-        Log.e("--","test");
         try {
             Android.initialize(this);
+            Method m = Boot.class.getMethod("main", new Class[]{String[].class});
+
+            HelloWorldAgent agent = new HelloWorldAgent(null);
+            String[] args = new String[1];
+            args[0] = agent.getClass().getName();
+
+            m.invoke(Boot.class, new Object[]{args});
+
         } catch (Android.AndroidException e) {
-            Log.e("JanusApplication", e.getLocalizedMessage(), e);
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-
-        Kernel janusKernel = null;
-        HelloWorldAgent agent = null;
-
-
-        janusKernel = Kernel.create();
-        agent = new HelloWorldAgent(null);
-        janusKernel.spawn(agent.getClass());
     }
 
     @Override

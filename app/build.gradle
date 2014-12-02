@@ -30,7 +30,6 @@ repositories{
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //compile files('libs/janus.jar')
     //provided 'io.janusproject:io.janusproject.kernel:2.0.2.0-SNAPSHOT'
-    compile fileTree(dir: 'JanusKernel/io.janusproject.kernel/build/libs', include: ['*.jar'])
+    //compile fileTree(dir: 'JanusKernel/io.janusproject.kernel/build/libs', include: ['*.jar'])
 }

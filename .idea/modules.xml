@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JanusAndroid.iml" filepath="$PROJECT_DIR$/JanusAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JanusKernel/JanusKernel.iml" filepath="$PROJECT_DIR$/JanusKernel/JanusKernel.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/JanusKernel/io.janusproject.kernel/io.janusproject.kernel.iml" filepath="$PROJECT_DIR$/JanusKernel/io.janusproject.kernel/io.janusproject.kernel.iml" />
     </modules>
