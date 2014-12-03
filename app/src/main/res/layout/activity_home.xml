@@ -6,20 +6,31 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".HomeActivity">
+    tools:context=".HomeActivity"
+    android:background="#ff000000">
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
+    <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Crash!"
+        android:text="@string/toggleOff"
         android:id="@+id/btn_janus"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textOn="@string/toggleOn"
+        android:textOff="@string/toggleOff"
+        android:onClick="onServerToggleClicked"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/textViewLog"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btn_janus"
+        android:textColor="#ff21c105"
+        android:typeface="monospace"
+        android:textSize="6pt"
+        android:textIsSelectable="true" />
 
 </RelativeLayout>

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 20
     buildToolsVersion "20.0.0"
@@ -18,18 +17,12 @@ android {
     }
     productFlavors {
     }
-}
-
-repositories{
-    mavenCentral()
-    def homePath = System.properties['user.home']
-    maven{
-        url "file://" + homePath + "/.m2/repository"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    //provided 'io.janusproject:io.janusproject.kernel:2.0.2.0-SNAPSHOT'
-    //compile fileTree(dir: 'JanusKernel/io.janusproject.kernel/build/libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', exclude: ['*-sources.jar'], include: ['*.jar'])
 }

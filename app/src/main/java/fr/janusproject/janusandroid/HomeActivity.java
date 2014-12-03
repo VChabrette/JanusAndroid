@@ -1,38 +1,141 @@
 package fr.janusproject.janusandroid;
 
 import android.app.Activity;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Scroller;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import org.arakhne.afc.vmutil.Android;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import fr.janusproject.janusandroid.agents.HelloWorldAgent;
 import io.janusproject.Boot;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements TextViewActivity {
+    private TextView tv;
+    private Scroller tvs;
+    private String applicationName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Find application name
+        final PackageManager pm = getApplicationContext().getPackageManager();
+        ApplicationInfo ai;
+        try {
+            ai = pm.getApplicationInfo(this.getPackageName(), 0);
+        } catch (final PackageManager.NameNotFoundException e) {
+            ai = null;
+        }
+        applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+
+        // Create OutputStream to bind sysout to log
+        OutputStream infoOS = new OutputStream() {
+            @Override
+            public synchronized void write(byte[] buffer, int offset, int len) {
+                setText(new String(buffer)); // Write in console textview
+                Log.i(applicationName, new String(buffer)); // Log in LogCat
+            }
+
+            @Override
+            public void write(int oneByte)
+                    throws IOException {
+                // Not really sure what to do here...
+            }
+        };
+        OutputStream errorOS = new OutputStream() {
+            @Override
+            public synchronized void write(byte[] buffer, int offset, int len) {
+                setText(new String(buffer), true); // Write in console textview (in red)
+                Log.e(applicationName, new String(buffer)); // Log in LogCat
+            }
+
+            @Override
+            public void write(int oneByte)
+                    throws IOException {
+                // Not really sure what to do here...
+            }
+        };
+
+        System.setOut(new PrintStream(infoOS)); // Define Sout stream
+        System.setErr(new PrintStream(errorOS)); // Define Serr stream
+
+        // Start of onCreate
+        ArrayList<Integer> test = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Button janus_btn = new Button(this);
-        janus_btn = (Button) findViewById(R.id.btn_janus);
-        janus_btn.setOnClickListener(new View.OnClickListener() {
+        tv = (TextView) findViewById(R.id.textViewLog);
+        tvs = new Scroller(this);
+        tv.setScroller(tvs);
+
+        System.out.println("-- Application initialisation  --");
+        System.out.println("ip address: " + OtherUtils.getIPAddress(true));
+
+        //TextViewLogger tvlog = new TextViewLogger(this);
+        //tvlog.start();
+    }
+
+    @Override
+    public void setText(final String line, final boolean err) {
+        this.runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                launchJanus();
+            public void run() {
+                // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                tvs.computeScrollOffset();
+                Boolean scroll = tvs.getCurrY() >= (tvs.getFinalY() - (2 * tv.getLineHeight()));
+                tv.append(line);
+                if (err) {
+                    Spannable spannableText = (Spannable) tv.getText();
+                    spannableText.setSpan(new ForegroundColorSpan(Color.RED), tv.getText().length() - line.length(), tv.getText().length(), 0);
+                }
+                if (scroll) {
+                    tv.scrollTo(0, tvs.getFinalY());
+                    //tvs.startScroll(tvs.getCurrX(), tvs.getCurrY(), 0, tvs.getFinalY()-tvs.getCurrY());
+                    tv.computeScroll();
+                }
             }
         });
     }
 
-    public void launchJanus(){
+    @Override
+    public void setText(final String line) {
+        setText(line, false);
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void onServerToggleClicked(View view) {
+        // Is the toggle on?
+        boolean on = ((ToggleButton) view).isChecked();
+
+        if (on) {
+            launchJanus();
+        } else {
+        }
+    }
+
+    public void launchJanus() {
+        System.out.println();
+        System.out.println("-- Launch of the Janus Kernel --");
+        System.out.println();
         try {
             Android.initialize(this);
             Method m = Boot.class.getMethod("main", new Class[]{String[].class});
@@ -42,7 +145,6 @@ public class HomeActivity extends Activity {
             args[0] = agent.getClass().getName();
 
             m.invoke(Boot.class, new Object[]{args});
-
         } catch (Android.AndroidException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
