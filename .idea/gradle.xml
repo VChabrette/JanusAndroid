@@ -9,9 +9,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/JanusKernel" />
-            <option value="$PROJECT_DIR$/JanusKernel/io.janusproject.kernel" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/io.janusproject.kernel" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -1,2 +1,1 @@
-include ':app', ':JanusKernel', ':io.janusproject.kernel'
-project(':io.janusproject.kernel').projectDir = new File('JanusKernel/io.janusproject.kernel')
+include ':app'
