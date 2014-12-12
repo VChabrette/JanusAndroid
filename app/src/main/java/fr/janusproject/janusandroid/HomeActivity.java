@@ -25,15 +25,31 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import fr.janusproject.janusandroid.agents.HelloWorldAgent;
-import io.janusproject.Boot;
+import fr.janusproject.janusandroid.janus.Boot;
 
 public class HomeActivity extends Activity implements TextViewActivity {
+
+    /** Tag for logs.
+     */
+    protected static final String TAG = "HomeActivity"; //$NON-NLS-1$
+
+
     private TextView tv;
     private Scroller tvs;
     private String applicationName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Initialize the Arakhne-VM-utility library to
+        // support this Android activity
+        try {
+            Android.initialize(this);
+        }
+        catch (Android.AndroidException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+
         // Find application name
         final PackageManager pm = getApplicationContext().getPackageManager();
         ApplicationInfo ai;
@@ -137,16 +153,18 @@ public class HomeActivity extends Activity implements TextViewActivity {
         System.out.println("-- Launch of the Janus Kernel --");
         System.out.println();
         try {
-            Android.initialize(this);
             Method m = Boot.class.getMethod("main", new Class[]{String[].class});
 
+
+
             HelloWorldAgent agent = new HelloWorldAgent(null);
-            String[] args = new String[1];
-            args[0] = agent.getClass().getName();
+            String[] args = new String[2];
+            args[0] = "-o";
+            args[1] = agent.getClass().getName();
 
             m.invoke(Boot.class, new Object[]{args});
-        } catch (Android.AndroidException e) {
-            e.printStackTrace();
+       /* } catch (Android.AndroidException e) {
+            e.printStackTrace();*/
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
