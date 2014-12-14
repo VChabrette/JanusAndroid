@@ -15,6 +15,6 @@ public class HelloWorldAgent extends Agent {
     }
 
     public void live() {
-        System.out.println("Connard!");
+        System.out.println("Coucou!");
     }
 }
