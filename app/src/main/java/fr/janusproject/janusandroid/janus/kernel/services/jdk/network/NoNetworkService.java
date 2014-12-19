@@ -19,9 +19,6 @@
  */
 package fr.janusproject.janusandroid.janus.kernel.services.jdk.network;
 
-import fr.janusproject.janusandroid.janus.services.executor.ExecutorService;
-import fr.janusproject.janusandroid.janus.services.kerneldiscovery.KernelDiscoveryService;
-import fr.janusproject.janusandroid.janus.services.logging.LogService;
 import fr.janusproject.janusandroid.janus.services.network.AbstractNetworkingService;
 import fr.janusproject.janusandroid.janus.services.network.NetworkServiceListener;
 import fr.janusproject.janusandroid.janus.services.network.NetworkUtil;
@@ -33,10 +30,9 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import com.google.common.util.concurrent.Service;
 import com.google.inject.Inject;
@@ -53,11 +49,6 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class NoNetworkService extends AbstractNetworkingService {
-
-	private static final Random RANDOM = new Random();
-
-	private static final int DYNFROM = 0xc000;
-    private static final int DYNTO = 0xffff;
 
     private final List<NetworkServiceListener> listeners = new ArrayList<>();
 
@@ -130,16 +121,15 @@ public class NoNetworkService extends AbstractNetworkingService {
 	 */
 	@Override
 	protected synchronized void doStart() {
-		int port = DYNFROM + (RANDOM.nextInt() % (DYNTO - DYNFROM));
 		InetAddress adr = NetworkUtil.getLoopbackAddress();
 		if (adr == null) {
 			try {
-				this.localHost = NetworkUtil.toURI("tcp://127.0.0.1:" + port); //$NON-NLS-1$
+				this.localHost = NetworkUtil.toURI("tcp://127.0.0.1:0"); //$NON-NLS-1$
 			} catch (URISyntaxException e) {
 				throw new Error(e);
 			}
 		} else {
-			this.localHost = NetworkUtil.toURI(adr, port);
+			this.localHost = NetworkUtil.toURI(adr, 0);
 		}
 		notifyStarted();
 	}
@@ -155,14 +145,14 @@ public class NoNetworkService extends AbstractNetworkingService {
 	 */
 	@Override
 	public Collection<Class<? extends Service>> getServiceDependencies() {
-		return Arrays.<Class<? extends Service>>asList(LogService.class, ExecutorService.class);
+		return Collections.emptyList();
 	}
 
 	/** {@inheritDoc}
 	 */
 	@Override
 	public Collection<Class<? extends Service>> getServiceWeakDependencies() {
-		return Arrays.<Class<? extends Service>>asList(KernelDiscoveryService.class);
+		return Collections.emptyList();
 	}
 
 }

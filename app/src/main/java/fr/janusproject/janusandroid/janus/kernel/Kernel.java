@@ -21,6 +21,7 @@ package fr.janusproject.janusandroid.janus.kernel;
 
 import fr.janusproject.janusandroid.janus.services.IServiceManager;
 import fr.janusproject.janusandroid.janus.services.Services;
+import fr.janusproject.janusandroid.janus.services.logging.LogService;
 import fr.janusproject.janusandroid.janus.services.spawn.KernelAgentSpawnListener;
 import fr.janusproject.janusandroid.janus.services.spawn.SpawnService;
 import fr.janusproject.janusandroid.janus.util.LoggerCreator;
@@ -72,20 +73,30 @@ public class Kernel {
 
 	private final SpawnService spawnService;
 
+	private final LogService loggingService;
+
+	/** Logger used by the kernel, but not linked to the logging kernel's service.
+	 */
+	private Logger rawLogger;
+
+
 	/**
 	 * Constructs a Janus kernel.
 	 *
 	 * @param serviceManager is the instance of the service manager that must be used by the kernel.
 	 * @param spawnService is the instance of the spawn service.
+	 * @param loggingService is the instance of the logging service.
 	 * @param exceptionHandler is the handler of the uncaught exceptions.
 	 */
 	@Inject
 	Kernel(IServiceManager serviceManager,
 			SpawnService spawnService,
+			LogService loggingService,
 			UncaughtExceptionHandler exceptionHandler) {
 		// Initialize the fields
 		this.serviceManager = serviceManager;
 		this.spawnService = spawnService;
+		this.loggingService = loggingService;
 
 		// Ensure that all the threads has a default hander.
 		Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
@@ -148,6 +159,21 @@ public class Kernel {
 		return null;
 	}
 
+	/** Replies the logger used by the kernel.
+	 *
+	 * @return the logger of the kernel.
+	 */
+	public Logger getLogger() {
+		Logger log = this.loggingService.getLogger();
+		if (!this.loggingService.isRunning()) {
+			if (this.rawLogger == null) {
+				this.rawLogger = LoggerCreator.createLogger(Kernel.class.getName());
+			}
+			log = this.rawLogger;
+		}
+		return log;
+	}
+
 	/**
 	 * Change the Janus context of the kernel.
 	 *
@@ -202,10 +228,6 @@ public class Kernel {
 	 */
 	private class StopTheKernel implements ThreadFactory, Runnable, UncaughtExceptionHandler {
 
-		/** Logger for the shuting down stage.
-		 */
-		private final Logger rawLogger = LoggerCreator.createLogger(Kernel.class.getName());
-
 		/**
 		 */
 		public StopTheKernel() {
@@ -224,9 +246,10 @@ public class Kernel {
 		@SuppressWarnings("synthetic-access")
 		@Override
 		public void run() {
-			this.rawLogger.info(Locale.getString(Kernel.class, "STOP_KERNEL_SERVICES")); //$NON-NLS-1$
+			Logger logger = getLogger();
+			logger.info(Locale.getString(Kernel.class, "STOP_KERNEL_SERVICES")); //$NON-NLS-1$
 			Services.stopServices(Kernel.this.serviceManager);
-			this.rawLogger.info(Locale.getString(Kernel.class, "KERNEL_SERVICES_STOPPED")); //$NON-NLS-1$
+			logger.info(Locale.getString(Kernel.class, "KERNEL_SERVICES_STOPPED")); //$NON-NLS-1$
 		}
 
 		/** {@inheritDoc}
@@ -234,7 +257,7 @@ public class Kernel {
 		@Override
 		public Thread newThread(Runnable r) {
 			Thread t = Executors.defaultThreadFactory().newThread(r);
-			t.setName("Janus shutdown"); //$NON-NLS-1$
+			t.setName("Janus kernel shutdown"); //$NON-NLS-1$
 			t.setDaemon(false);
 			t.setUncaughtExceptionHandler(this);
 			return t;
@@ -252,7 +275,8 @@ public class Kernel {
 			assert (elt != null);
 			record.setSourceClassName(elt.getClassName());
 			record.setSourceMethodName(elt.getMethodName());
-			this.rawLogger.log(record);
+			Logger logger = getLogger();
+			logger.log(record);
 		}
 
 	}

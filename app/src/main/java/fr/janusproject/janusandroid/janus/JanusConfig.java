@@ -71,7 +71,7 @@ public final class JanusConfig {
 	/** The default name of the logging property file of Janus.
 	 * @see #LOGGING_PROPERTY_FILE_NAME
 	 */
-	public static final String LOGGING_PROPERTY_FILE_VALUE = "resource:fr/janusproject/janusandroid/janus/logging.properties"; //$NON-NLS-1$
+	public static final String LOGGING_PROPERTY_FILE_VALUE = "resource:io/janusproject/logging.properties"; //$NON-NLS-1$
 	/** Name of the property that contains the identifier of the Janus context.
 	 * @see #DEFAULT_CONTEXT_ID_VALUE
 	 */
@@ -126,6 +126,10 @@ public final class JanusConfig {
 	 */
 	public static final String BOOT_AGENT = "janus.boot.agent"; //$NON-NLS-1$
 
+	/** Name of the property that contains the identifier of the boot agent.
+	 */
+	public static final String BOOT_AGENT_ID = "janus.boot.agent.id"; //$NON-NLS-1$
+
 	/** Name of the property that contains the public network URI.
 	 */
 	public static final String PUB_URI = "network.pub.uri"; //$NON-NLS-1$
@@ -163,6 +167,18 @@ public final class JanusConfig {
 	 */
 	public static final String INJECTION_MODULE_NAME_VALUE = StandardJanusPlatformModule.class.getName();
 
+	/** Name of the property that contains the numbers of seconds between two purges of
+	 * the terminated threads by the kernel.
+	 * @see #KERNEL_THREAD_PURGE_DELAY_VALUE
+	 */
+	public static final String KERNEL_THREAD_PURGE_DELAY_NAME = "janus.executors.purgeDelay"; //$NON-NLS-1$
+
+	/** Indicates the numbers of seconds between two purges of
+	 * the terminated threads by the kernel.
+	 * @see #KERNEL_THREAD_PURGE_DELAY_NAME
+	 */
+	public static final int KERNEL_THREAD_PURGE_DELAY_VALUE = 30;
+
 	private JanusConfig() {
 		//
 	}
@@ -173,6 +189,7 @@ public final class JanusConfig {
 	 */
 	public static void getDefaultValues(Properties defaultValues) {
 		defaultValues.put(BOOT_AGENT, ""); //$NON-NLS-1$
+		defaultValues.put(BOOT_AGENT_ID, ""); //$NON-NLS-1$
 		defaultValues.put(BOOT_DEFAULT_CONTEXT_ID_NAME, BOOT_DEFAULT_CONTEXT_ID_VALUE.toString());
 		defaultValues.put(DEFAULT_CONTEXT_ID_NAME, DEFAULT_CONTEXT_ID_VALUE);
 		defaultValues.put(DEFAULT_SPACE_ID_NAME, DEFAULT_SPACE_ID_VALUE);
@@ -185,6 +202,7 @@ public final class JanusConfig {
 		defaultValues.put(MAX_NUMBER_OF_THREADS_IN_EXECUTOR_NAME,
 				Integer.toString(MAX_NUMBER_OF_THREADS_IN_EXECUTOR_VALUE));
 		defaultValues.put(KERNEL_THREAD_TIMEOUT_NAME, Integer.toString(KERNEL_THREAD_TIMEOUT_VALUE));
+		defaultValues.put(KERNEL_THREAD_PURGE_DELAY_NAME, Integer.toString(KERNEL_THREAD_PURGE_DELAY_VALUE));
 		defaultValues.put(INJECTION_MODULE_NAME, INJECTION_MODULE_NAME_VALUE);
 		defaultValues.put(JANUS_LOGO_SHOW_NAME, JANUS_LOGO_SHOW.toString());
 	}

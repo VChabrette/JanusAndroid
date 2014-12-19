@@ -23,7 +23,6 @@ import fr.janusproject.janusandroid.janus.kernel.services.arakhne.ArakhneLocaleL
 import fr.janusproject.janusandroid.janus.kernel.services.jdk.contextspace.StandardContextSpaceService;
 import fr.janusproject.janusandroid.janus.kernel.services.jdk.spawn.StandardSpawnService;
 import fr.janusproject.janusandroid.janus.modules.executors.JdkExecutorModule;
-import fr.janusproject.janusandroid.janus.modules.hazelcast.HazelcastModule;
 import fr.janusproject.janusandroid.janus.modules.kernel.MandatoryKernelModule;
 import fr.janusproject.janusandroid.janus.services.contextspace.ContextSpaceService;
 import fr.janusproject.janusandroid.janus.services.distributeddata.DistributedDataStructureService;
@@ -40,8 +39,10 @@ import com.google.inject.multibindings.Multibinder;
 
 /**
  * The Core Janus Module configures the minimum requirements
- * for Janus to run properly. If you need a standard configuration
- * use <code>JanusDefaultModule</code>
+ * for Janus to run properly.
+ * The network-based modules are skipped in this StandardCoreModule.
+ * See {@link StandardJanusPlatformModule} for the configuration
+ * of the network-based modules
  *
  *
  * @author $Author: srodriguez$
@@ -60,7 +61,6 @@ public class StandardCoreModule extends AbstractModule {
 		bind(ContextSpaceService.class).to(StandardContextSpaceService.class).in(Singleton.class);
 		bind(SpawnService.class).to(StandardSpawnService.class).in(Singleton.class);
 
-		install(new HazelcastModule());
 		install(new JdkExecutorModule());
 
 		// Install the elements for the Janus kernel
