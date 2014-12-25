@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
 import org.arakhne.afc.vmutil.Android;
 
 import java.io.IOException;
@@ -153,23 +152,28 @@ public class HomeActivity extends Activity implements TextViewActivity {
         System.out.println("-- Launch of the Janus Kernel --");
         System.out.println();
         try {
-            Method m = Boot.class.getMethod("main", new Class[]{String[].class});
+//            Method m = Boot.class.getMethod("main", new Class[]{String[].class});
+//
+//            HelloWorldAgent agent = new HelloWorldAgent(null);
+//            String[] args = new String[2];
+//            args[0] = "-o";
+//            args[1] = agent.getClass().getName();
 
+            Boot.setOffline(true);
+            Boot.startJanus(
+                    null,
+                    HelloWorldAgent.class,
+                    null
+            );
 
-
-            HelloWorldAgent agent = new HelloWorldAgent(null);
-            String[] args = new String[2];
-            args[0] = "-o";
-            args[1] = agent.getClass().getName();
-
-            m.invoke(Boot.class, new Object[]{args});
-       /* } catch (Android.AndroidException e) {
-            e.printStackTrace();*/
+//            m.invoke(Boot.class, new Object[]{args});
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
