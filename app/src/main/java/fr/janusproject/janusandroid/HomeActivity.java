@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import fr.janusproject.janusandroid.agents.HelloWorldAgent;
@@ -152,12 +151,6 @@ public class HomeActivity extends Activity implements TextViewActivity {
         System.out.println("-- Launch of the Janus Kernel --");
         System.out.println();
         try {
-//            Method m = Boot.class.getMethod("main", new Class[]{String[].class});
-//
-//            HelloWorldAgent agent = new HelloWorldAgent(null);
-//            String[] args = new String[2];
-//            args[0] = "-o";
-//            args[1] = agent.getClass().getName();
 
             Boot.setOffline(true);
             Boot.startJanus(
