@@ -75,7 +75,7 @@ public class HomeActivity extends Activity implements TextViewActivity {
         OutputStream errorOS = new OutputStream() {
             @Override
             public synchronized void write(byte[] buffer, int offset, int len) {
-                setText(new String(buffer), true); // Write in console textview (in red)
+                setText(new String(buffer), Color.RED); // Write in console textview
                 Log.e(applicationName, new String(buffer)); // Log in LogCat
             }
 
@@ -101,12 +101,14 @@ public class HomeActivity extends Activity implements TextViewActivity {
         System.out.println("-- Application initialisation  --");
         System.out.println("ip address: " + OtherUtils.getIPAddress(true));
 
-        //TextViewLogger tvlog = new TextViewLogger(this);
-        //tvlog.start();
+        /* Instantiate loggers */
+
+        createTextViewLogger("ArakhneLocaleLogService", Color.MAGENTA);
+        //createTextViewLogger("null", Color.CYAN);
     }
 
     @Override
-    public void setText(final String line, final boolean err) {
+    public void setText(final String line, final int color) {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -114,10 +116,12 @@ public class HomeActivity extends Activity implements TextViewActivity {
                 tvs.computeScrollOffset();
                 Boolean scroll = tvs.getCurrY() >= (tvs.getFinalY() - (2 * tv.getLineHeight()));
                 tv.append(line);
-                if (err) {
+
+                if(color != tv.getCurrentTextColor()) {
                     Spannable spannableText = (Spannable) tv.getText();
-                    spannableText.setSpan(new ForegroundColorSpan(Color.RED), tv.getText().length() - line.length(), tv.getText().length(), 0);
+                    spannableText.setSpan(new ForegroundColorSpan(color), tv.getText().length() - line.length(), tv.getText().length(), 0);
                 }
+
                 if (scroll) {
                     tv.scrollTo(0, tvs.getFinalY());
                     //tvs.startScroll(tvs.getCurrX(), tvs.getCurrY(), 0, tvs.getFinalY()-tvs.getCurrY());
@@ -129,7 +133,7 @@ public class HomeActivity extends Activity implements TextViewActivity {
 
     @Override
     public void setText(final String line) {
-        setText(line, false);
+        setText(line, this.tv.getCurrentTextColor());
     }
 
     public String getApplicationName() {
@@ -188,5 +192,17 @@ public class HomeActivity extends Activity implements TextViewActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public TextViewLogger createTextViewLogger(String tag, int color){
+        TextViewLogger r = new TextViewLogger(this, tag, color);
+        r.start();
+        return r;
+    }
+
+    public TextViewLogger createTextViewLogger(String tag){
+        TextViewLogger r = new TextViewLogger(this, tag);
+        r.start();
+        return r;
     }
 }

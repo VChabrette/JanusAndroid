@@ -9,6 +9,6 @@ public interface TextViewActivity {
     TextView tv = null;
 
     public void setText(String line);
-    public void setText(String line, boolean err);
+    public void setText(String line, int color);
     public String getApplicationName();
 }
