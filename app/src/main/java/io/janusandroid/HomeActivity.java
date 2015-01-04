@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import io.janusandroid.agents.HelloLoopAgent;
+import io.janusagents.HelloLoopAgent;
 import io.janusproject.Boot;
 
 public class HomeActivity extends Activity implements TextViewActivity {
@@ -60,7 +60,7 @@ public class HomeActivity extends Activity implements TextViewActivity {
         }
         applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
 
-        // Create OutputStream to bind sysout to log
+        // Create OutputStream to bind sysout to logcat
         OutputStream infoOS = new OutputStream() {
             @Override
             public synchronized void write(byte[] buffer, int offset, int len) {
@@ -96,6 +96,7 @@ public class HomeActivity extends Activity implements TextViewActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // setup TextView
         tv = (TextView) findViewById(R.id.textViewLog);
         tvs = new Scroller(this);
         tv.setScroller(tvs);

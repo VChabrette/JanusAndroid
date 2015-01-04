@@ -1,4 +1,4 @@
-package io.janusandroid.agents;
+package io.janusagents;
 
 import java.util.UUID;
 

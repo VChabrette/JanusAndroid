@@ -1,4 +1,4 @@
-package io.janusandroid.agents;
+package io.janusagents;
 
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
